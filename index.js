@@ -2,9 +2,10 @@ var koa = require('koa');
 var router = require('koa-router');
 var passport = require('koa-passport');
 var HawkStrategy = require('passport-hawk');
-var LocalStrategy = require('passport-local').Strategy;
+var BasicStrategy = require('passport-http').BasicStrategy;
 var app = koa();
 
+app.use(passport.initialize());
 
 //------------------------------------------------------------
 // Login Data
@@ -18,7 +19,7 @@ var config = {
 	    user: 'doug'
 	}
     },
-    local: {
+    basic: {
 	'doug': { id: 42, username: 'doug', password: 'asimov'}
     }
 };
@@ -27,8 +28,6 @@ var config = {
 //------------------------------------------------------------
 // Passport Setup
 
-app.use(passport.initialize());
-
 passport.use('hawk', new HawkStrategy(function (id, done) {
     if (!config.hawk[id]) {
 	return done({message: "invalid user id"});
@@ -36,12 +35,12 @@ passport.use('hawk', new HawkStrategy(function (id, done) {
     done(null, config.hawk[id]);
 }));
 
-passport.use('local', new LocalStrategy(function(u, p, done) {
-    if (!config.local[u])
-	return done(null, false, {message: 'unknown user'});
-    if (config.local[u].password !== p)
-	return done(null, false, {message: 'invalid password'});
-    done(null, config.local[u]);
+passport.use('basic', new BasicStrategy(function(u, p, done) {
+  if (!config.basic[u])
+    return done(null, false);
+  if (config.basic[u].password !== p)
+    return done(null, false);
+  return done(null, config.basic[u]);
 }));
 
 
@@ -54,15 +53,15 @@ app.get('/h', passport.authenticate('hawk', {session: false}), function *(next) 
     this.body = 'h good';
 });
 
-app.get('/l', passport.authenticate('local', {session: false}), function *(next) {
+app.get('/b', passport.authenticate('basic', {session: false}), function *(next) {
     this.body = 'l good';
 });
 	     
-app.get('/hl', passport.authenticate(['hawk', 'local'], {session: false}), function *(next) {
+app.get('/hb', passport.authenticate(['hawk', 'basic'], {session: false}), function *(next) {
     this.body = 'hl good';
 });
 
-app.get('/lh', passport.authenticate(['local', 'hawk'], {session: false}), function *(next) {
+app.get('/bh', passport.authenticate(['basic', 'hawk'], {session: false}), function *(next) {
     this.body = 'lh good';
 });
 
