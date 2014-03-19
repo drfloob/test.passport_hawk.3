@@ -20,14 +20,27 @@ var badCreds = {
 var goodLocal = "?username=doug&password=asimov";
 var badLocal = "?username=doug&password=hawking";
 
+function log(res) {
+    // return;
+    console.log('\n');
+    console.log(res.request.uri.href);
+    console.log(res.headers);
+    console.log(res.body);
+    console.log(res.statusCode);
+    console.log('\n\n');
+};
+
+
 describe('hawk only', function () {
     describe('with invalid request', function () {
 	it('returns 401', function (done) {
 	    var hdr = Hawk.client.header('http://localhost:3000/h', 'GET', {credentials: badCreds});
 	    request({url: "http://localhost:3000/h", headers: {'Authorization': hdr.field}}, 
 		    function(err, res, body) {
+			log(res);
 			expect(err).toBeFalsy();
 			expect(res.statusCode).toBe(401);
+			expect(res.headers['www-authenticate']).toMatch(/Hawk/);
 			done();
 		    });
 	});
@@ -40,6 +53,7 @@ describe('hawk only', function () {
 		    function(err, res, body) {
 			expect(err).toBeFalsy();
 			expect(res.statusCode).toBe(200);
+			expect(res.headers['www-authenticate']).toBeUndefined();
 			done();
 		    });
 	});
@@ -53,17 +67,19 @@ describe('local only', function () {
 		    function (err, res, body) {
 			expect(err).toBeFalsy();
 			expect(res.statusCode).toBe(401);
+			expect(res.headers['www-authenticate']).toBeUndefined();
 			done();
 		    });
 	});
     });
-
+    
     describe('with valid request', function (done) {
 	it('returns 200', function (done) {
 	    request("http://localhost:3000/l" + goodLocal, 
 		    function (err, res, body) {
 			expect(err).toBeFalsy();
 			expect(res.statusCode).toBe(200);
+			expect(res.headers['www-authenticate']).toBeUndefined();
 			done();
 		    });
 	});
@@ -77,8 +93,10 @@ describe('hawk then local', function () {
 	    var hdr = Hawk.client.header(url, 'GET', {credentials: badCreds});
 	    request({url: url, headers: {'Authorization': hdr.field}}, 
 		    function(err, res, body) {
+			log(res);
 			expect(err).toBeFalsy();
 			expect(res.statusCode).toBe(401);
+			expect(res.headers['www-authenticate']).toMatch(/Hawk/);
 			done();
 		    });
 	});
@@ -91,6 +109,7 @@ describe('hawk then local', function () {
 		    function(err, res, body) {
 			expect(err).toBeFalsy();
 			expect(res.statusCode).toBe(200);
+			expect(res.headers['www-authenticate']).toBeUndefined();
 			done();
 		    });
 	});
@@ -103,6 +122,7 @@ describe('hawk then local', function () {
 		    function(err, res, body) {
 			expect(err).toBeFalsy();
 			expect(res.statusCode).toBe(200);
+			expect(res.headers['www-authenticate']).toBeUndefined();
 			done();
 		    });
 	});
@@ -115,6 +135,7 @@ describe('hawk then local', function () {
 		    function(err, res, body) {
 			expect(err).toBeFalsy();
 			expect(res.statusCode).toBe(200);
+			expect(res.headers['www-authenticate']).toBeUndefined();
 			done();
 		    });
 	});
@@ -128,8 +149,10 @@ describe('local then hawk', function () {
 	    var hdr = Hawk.client.header(url, 'GET', {credentials: badCreds});
 	    request({url: url, headers: {'Authorization': hdr.field}}, 
 		    function(err, res, body) {
+			log(res);
 			expect(err).toBeFalsy();
 			expect(res.statusCode).toBe(401);
+			expect(res.headers['www-authenticate']).toMatch(/Hawk/);
 			done();
 		    });
 	});
@@ -142,6 +165,7 @@ describe('local then hawk', function () {
 		    function(err, res, body) {
 			expect(err).toBeFalsy();
 			expect(res.statusCode).toBe(200);
+			expect(res.headers['www-authenticate']).toBeUndefined();
 			done();
 		    });
 	});
@@ -154,6 +178,7 @@ describe('local then hawk', function () {
 		    function(err, res, body) {
 			expect(err).toBeFalsy();
 			expect(res.statusCode).toBe(200);
+			expect(res.headers['www-authenticate']).toBeUndefined();
 			done();
 		    });
 	});
@@ -166,6 +191,7 @@ describe('local then hawk', function () {
 		    function(err, res, body) {
 			expect(err).toBeFalsy();
 			expect(res.statusCode).toBe(200);
+			expect(res.headers['www-authenticate']).toBeUndefined();
 			done();
 		    });
 	});
