@@ -1,11 +1,25 @@
-This assumes `jasmine-node` is installed globally at
+This tests some unsolved problems with `passport-hawk`, and my
+proposed solutions. Some spec reading is still in order. Please
+review, especially if you're steeped in web Authentication stuff.
+
+## Assumptions
+
+`jasmine-node` is installed globally at
 `/usr/local/lib/node_modules/jasmine-node/` (as is done with the `n`
 node version manager).
 
-I don't know of a better way to manage package versions in npm, but
-the following works anyway (on Linux).
+You're running `node` v0.11.9 or higher (must support --harmony).
 
-### To run tests with the `.fail` fixes proposed in jfromaniello/passport-hawk#6
+You're ok with your npm cache being cleared for `passport-hawk` and
+`_git-remotes`
+
+## Note
+
+I don't know of a better way to manage package versions in npm. If
+someone's got a better trick, please share! The following kludge works
+in a pinch (on Linux, anyway).
+
+### To run tests with the `.fail` fixes in drfloob/passport-hawk:
 
 ```bash
 npm install
