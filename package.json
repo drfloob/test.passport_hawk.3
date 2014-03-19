@@ -1,0 +1,22 @@
+{
+  "name": "test.passport_hawk.3",
+  "version": "0.0.0",
+  "description": "Tests for jfromaniello/passport-hawk, PRs #3, #5, and #6 (using koa)",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --harmony /usr/local/lib/node_modules/jasmine-node/lib/jasmine-node/cli.js --matchall --verbose --forceexit test/"
+  },
+  "author": "A.J. Heller <aj@drfloob.com>",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^0.5.1",
+    "koa-passport": "^0.2.0",
+    "passport-hawk": "git://github.com/drfloob/passport-hawk",
+    "koa-router": "^3.1.2",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "request": "^2.34.0",
+    "hawk": "^2.1.2"
+  }
+}
